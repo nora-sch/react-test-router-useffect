@@ -1,24 +1,28 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const Post = () => {
   const { id } = useParams();
   const [post, setPost] = useState({});
+  const navigate = useNavigate();
   useEffect(() => {
     const getOnePost = async () => {
       const post = await fetch(
-        `https://jsonplaceholder.typicode.com/posts/${id}`
+        `https://jsonplaceholder.typicode.com/post/${id}`
       );
-      const postJson = await post.json();
-      console.log(postJson)
-      setPost(postJson);
+      if (post.status === 200) {
+        const postJson = await post.json();
+        setPost(postJson);
+      } else {
+       navigate('/error-404');
+      }
     };
     getOnePost();
   }, []);
 
   return (
     <div>
-      <h2 style={{textTransform:"uppercase"}}>{post.title}</h2>
+      <h2 style={{ textTransform: "uppercase" }}>{post.title}</h2>
       <p>{post.body}</p>
     </div>
   );
